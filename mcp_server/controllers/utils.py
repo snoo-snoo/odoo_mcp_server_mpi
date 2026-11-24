@@ -105,17 +105,17 @@ def _sanitize_or_log(
         return None
 
 
-def is_mcp_enabled() -> bool:
+def is_mcp_enabled(env: Optional[Environment] = None) -> bool:
     """Whether MCP is globally enabled (``mcp_server.enabled``, default off).
 
-    Delegates to the @ormcache-d ``mcp.enabled.model._get_mcp_enabled()``, so the
-    value is served from the registry cache and invalidated cross-worker on any
-    config change (``registry.clear_cache`` + DB signaling) -- the master
-    kill-switch takes effect on every worker's next request, not after a TTL. A
-    read error (e.g. no bound request) degrades to disabled (fail closed).
+    Delegates to the @ormcache-d ``mcp.enabled.model._get_mcp_enabled()``.
+    Accepts an explicit ``env`` so non-HTTP callers (tests, server actions,
+    cron jobs) do not fail with an unbound ``request`` proxy; falls back to
+    ``request.env`` when omitted. A read error degrades to disabled (fail closed).
     """
     try:
-        gates = request.env["mcp.enabled.model"].sudo()  # sudo: admin config read
+        target_env = env if env is not None else request.env
+        gates = target_env["mcp.enabled.model"].sudo()  # sudo: admin config read
         return gates._get_mcp_enabled()
     except Exception as e:
         _logger.error(f"Error checking if MCP is enabled: {e}")
@@ -146,11 +146,11 @@ def get_allowed_origins() -> tuple:
 def is_oauth_enabled(env: Environment) -> bool:
     """Whether the OAuth 2.1 front door is enabled (``mcp_server.enable_oauth``).
 
-    Enabled by default -- an unset parameter counts as enabled -- so OAuth is
-    available as soon as MCP itself is enabled; set the parameter to any value
-    other than "True" to accept API-key auth only. Delegates to the @ormcache-d
-    ``mcp.enabled.model._get_oauth_enabled()`` (cross-worker-invalidated on
-    config change). A read error degrades to disabled (fail closed).
+    Disabled by default -- an unset parameter counts as disabled -- so only
+    API-key auth is active until an admin opts in to OAuth 2.1. Delegates to
+    the @ormcache-d ``mcp.enabled.model._get_oauth_enabled()``
+    (cross-worker-invalidated on config change). A read error degrades to
+    disabled (fail closed).
     """
     try:
         gates = env["mcp.enabled.model"].sudo()  # sudo: admin config read
@@ -160,13 +160,61 @@ def is_oauth_enabled(env: Environment) -> bool:
         return False
 
 
+def is_oauth_dcr_enabled(env: Environment) -> bool:
+    """Whether OAuth Dynamic Client Registration is enabled.
+
+    Gated by ``mcp_server.allow_oauth_dcr`` (default on while OAuth itself is
+    enabled). Turn off when using only pre-registered OAuth clients so
+    ``/mcp/oauth/register`` returns 404. Fails closed on error.
+    """
+    try:
+        gates = env["mcp.enabled.model"].sudo()  # sudo: admin config read
+        return gates._get_oauth_dcr_enabled()
+    except Exception as e:
+        _logger.error(f"Error checking if OAuth DCR is enabled: {e}")
+        return False
+
+
+def is_external_chatter_allowed(env: Optional[Environment] = None) -> bool:
+    """Whether ``post_message`` may send external comments or notify partner_ids.
+
+    Disabled by default (``mcp_server.allow_external_chatter_messages``) so
+    ``post_message`` only posts internal notes unless an admin explicitly opts
+    in. Fails closed on error.
+    """
+    try:
+        target_env = env if env is not None else request.env
+        gates = target_env["mcp.enabled.model"].sudo()  # sudo: admin config read
+        return gates._get_allow_external_chatter_messages()
+    except Exception as e:
+        _logger.error(f"Error checking if external chatter messages are allowed: {e}")
+        return False
+
+
+def is_attachment_download_links_allowed(env: Optional[Environment] = None) -> bool:
+    """Whether ``read_attachment`` may mint unauthenticated download links.
+
+    Controlled by ``mcp_server.allow_attachment_download_links`` (default on).
+    Fails closed on error.
+    """
+    try:
+        target_env = env if env is not None else request.env
+        gates = target_env["mcp.enabled.model"].sudo()  # sudo: admin config read
+        return gates._get_allow_attachment_download_links()
+    except Exception as e:
+        _logger.error(
+            f"Error checking if attachment download links are allowed: {e}"
+        )
+        return False
+
+
 def is_model_mcp_enabled(env: Environment, model_name: str) -> bool:
     """
     Check if a specific model is MCP-enabled via
     `mcp.enabled.model.is_model_enabled()`, which is @ormcache-d (bounded and
     invalidated cross-worker on config change).
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return False
 
     model_name = _sanitize_or_log(model_name)
@@ -191,7 +239,7 @@ def check_model_operation_allowed(
     `mcp.enabled.model.check_model_operation_enabled()`, which is @ormcache-d
     (bounded and invalidated cross-worker on config change).
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return False
 
     model_name = _sanitize_or_log(model_name)
@@ -231,7 +279,7 @@ def check_model_method_allowed(env: Environment, model_name: str) -> bool:
     per-model `allow_method_calls` opt-in flag is set (default off). The gate is
     @ormcache-d via `mcp.enabled.model.is_method_call_enabled()`.
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return False
 
     model_name = _sanitize_or_log(model_name)
@@ -259,7 +307,7 @@ def get_enabled_models(env: Environment) -> List[Dict]:
     (technical name), "name" (display name) and "operations" (a dict of allowed
     read/create/write/unlink flags built from the loaded record).
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return []
 
     try:
@@ -305,7 +353,7 @@ def get_model_allowed_operations(env: Environment, model_name: str) -> Dict[str,
     operation name with boolean values. Returns an empty dict if the model is
     not found or not MCP-enabled.
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return {}
 
     model_name = _sanitize_or_log(model_name)
@@ -391,7 +439,7 @@ def check_mcp_access(env: Environment, model_name: str, method_name: str) -> boo
 
     method_name = str(method_name).strip()
 
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         _logger.info("MCP: Access denied because MCP is globally disabled.")
         return False
 
@@ -920,7 +968,7 @@ def get_system_info(env: Environment) -> Dict[str, Union[str, int]]:
         lang = env["ir.config_parameter"].sudo().get_param("base.language", "en_US")
 
     enabled_mcp_models_count = 0
-    if is_mcp_enabled():
+    if is_mcp_enabled(env):
         enabled_mcp_models_count = (
             env["mcp.enabled.model"].sudo().search_count([("active", "=", True)])
         )

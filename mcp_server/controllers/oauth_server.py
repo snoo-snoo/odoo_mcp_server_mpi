@@ -684,7 +684,7 @@ def oauth_surface_enabled():
     (``ir.http._mcp_unauthorized``), so the challenge never advertises a
     discovery document that answers 404.
     """
-    return utils.is_mcp_enabled() and utils.is_oauth_enabled(request.env)
+    return utils.is_mcp_enabled(request.env) and utils.is_oauth_enabled(request.env)
 
 
 def _require_oauth_enabled(method):
@@ -779,7 +779,6 @@ class OAuthMetadataController(http.Controller):
             "issuer": base,
             "authorization_endpoint": base + "/mcp/oauth/authorize",
             "token_endpoint": base + "/mcp/oauth/token",
-            "registration_endpoint": base + "/mcp/oauth/register",
             "response_types_supported": SUPPORTED_RESPONSE_TYPES,
             "grant_types_supported": SUPPORTED_GRANT_TYPES,
             "code_challenge_methods_supported": ["S256"],
@@ -788,6 +787,8 @@ class OAuthMetadataController(http.Controller):
             ),
             "scopes_supported": SUPPORTED_SCOPES,
         }
+        if utils.is_oauth_dcr_enabled(request.env):
+            metadata["registration_endpoint"] = base + "/mcp/oauth/register"
         return request.make_json_response(metadata)
 
 
@@ -1184,6 +1185,8 @@ class OAuthFlowController(http.Controller):
     @_require_oauth_enabled
     def register(self, **kwargs):
         """Register a PKCE client (pinned profile, IP rate-limited)."""
+        if not utils.is_oauth_dcr_enabled(request.env):
+            return Response(status=404)
         # Recorded before the retryable create_endpoint_response below: a
         # serialization retry (service.model.retrying) re-runs this handler and
         # re-counts the hit. Best-effort, self-penalizing, safe-direction -- see

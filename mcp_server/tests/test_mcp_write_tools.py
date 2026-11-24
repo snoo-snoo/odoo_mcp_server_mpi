@@ -2049,6 +2049,58 @@ class TestMcpWriteTools(common.HttpCase):
         self.assertTrue(result["isError"])
         self.assertIn("subtype", result["content"][0]["text"].lower())
 
+    def test_post_message_blocks_external_comment_and_partner_ids_by_default(self):
+        """External comments and partner_ids notifications are blocked by default."""
+        params = self.env["ir.config_parameter"].sudo()
+        params.search(
+            [("key", "=", "mcp_server.allow_external_chatter_messages")]
+        ).unlink()
+        utils.clear_mcp_caches()
+
+        comment_res = self._call_tool(
+            "post_message",
+            {
+                "model": "res.partner",
+                "record_id": self.partner.id,
+                "body": "Public reply",
+                "subtype": "comment",
+            },
+        )
+        self.assertTrue(comment_res["isError"], msg=comment_res)
+        self.assertIn("disabled", comment_res["content"][0]["text"].lower())
+
+        partner_res = self._call_tool(
+            "post_message",
+            {
+                "model": "res.partner",
+                "record_id": self.partner.id,
+                "body": "Notify partner",
+                "subtype": "note",
+                "partner_ids": [self.partner.id],
+            },
+        )
+        self.assertTrue(partner_res["isError"], msg=partner_res)
+        self.assertIn("partner_ids", partner_res["content"][0]["text"].lower())
+
+    def test_post_message_allows_external_comment_when_enabled(self):
+        """Enabling allow_external_chatter_messages permits comment & partner_ids."""
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_param("mcp_server.allow_external_chatter_messages", "True")
+        utils.clear_mcp_caches()
+
+        result = self._call_tool(
+            "post_message",
+            {
+                "model": "res.partner",
+                "record_id": self.partner.id,
+                "body": "Allowed external comment",
+                "subtype": "comment",
+                "partner_ids": [self.partner.id],
+            },
+        )
+        self.assertFalse(result["isError"], msg=result)
+        self.assertTrue(result["structuredContent"]["message_id"])
+
     # ------------------------------------------------------------------
     # Savepoint rollback: mutate-then-raise leaves NO partial row
     # ------------------------------------------------------------------

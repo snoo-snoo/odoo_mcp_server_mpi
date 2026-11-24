@@ -1249,7 +1249,9 @@ class McpToolsWrite(models.AbstractModel):
         title="Post Message",
         description=(
             "Post a message to a record's chatter (mail.thread). subtype 'note' "
-            "(default) logs an internal note; 'comment' notifies followers. "
+            "(default) logs an internal note; 'comment' notifies followers "
+            "(disabled by default unless Allow External Chatter Comments is "
+            "enabled in MCP settings, along with explicit partner_ids). "
             "Gated as a write operation; runs as the calling user, so Odoo's "
             "access rights and record rules apply."
         ),
@@ -1351,6 +1353,27 @@ class McpToolsWrite(models.AbstractModel):
             raise UserError(
                 _("Invalid subtype '%s'; expected 'note' or 'comment'.", subtype)
             )
+
+        if not utils.is_external_chatter_allowed(self.env):
+            if subtype == "comment":
+                raise UserError(
+                    _(
+                        "External chatter comments (subtype='comment') are "
+                        "disabled in MCP settings. Use subtype='note' for "
+                        "internal notes, or enable Allow External Chatter "
+                        "Comments in MCP Server settings."
+                    )
+                )
+            if partner_ids:
+                raise UserError(
+                    _(
+                        "Notifying explicit partner_ids via post_message is "
+                        "disabled in MCP settings to prevent unintended "
+                        "emails. Omit partner_ids for internal notes, or "
+                        "enable Allow External Chatter Comments in MCP Server "
+                        "settings."
+                    )
+                )
 
         # Omit partner_ids/attachment_ids when None (empty list can mean
         # "clear all" in some chatter contexts).
