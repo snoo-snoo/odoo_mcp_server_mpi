@@ -81,7 +81,7 @@ hardened by MPI GmbH, Michael Plöckinger (https://mpi-erp.at).
         ],
     },
     "images": [
-        "static/description/mpi_logo.png",
+        "static/description/banner.png",
         "static/description/icon.png",
     ],
     "external_dependencies": {
