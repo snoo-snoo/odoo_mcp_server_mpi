@@ -107,14 +107,14 @@ _api_limiter = SlidingWindowLimiter(RATE_LIMIT_WINDOW_MINUTES * 60)
 def is_rate_limiting_enabled():
     """Whether the ``mcp_server.enable_rate_limiting`` master switch is on.
 
-    Disabled by default. The limiter is an in-memory per-worker counter, so it
-    is best-effort abuse protection rather than a strict global cap; admins opt
-    in explicitly.
+    Enabled by default to protect MCP endpoints out of the box. The limiter is
+    an in-memory per-worker counter, so it is best-effort abuse protection
+    rather than a strict global cap.
     """
     return (
         request.env["ir.config_parameter"]
         .sudo()  # sudo: read a global config flag, not user-scoped data.
-        .get_str("mcp_server.enable_rate_limiting", "False")
+        .get_str("mcp_server.enable_rate_limiting", "True")
         == "True"
     )
 

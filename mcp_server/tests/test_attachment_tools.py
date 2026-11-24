@@ -476,6 +476,29 @@ class TestReadAttachmentLink(TestAttachmentToolsBase):
     def test_ttl_clamped_to_core_ceiling(self):
         self._assert_ttl(str(MAX_LINK_TTL_HOURS * 10), MAX_LINK_TTL_HOURS * 3600)
 
+    def test_link_refused_when_download_links_disabled(self):
+        """format='link' raises UserError when download links are disabled."""
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_str("mcp_server.allow_attachment_download_links", "False")
+        utils.clear_mcp_caches()
+        att = self._attachment("doc.pdf", _PDF_BYTES, "application/pdf")
+        with self.assertRaisesRegex(UserError, "download links are disabled"):
+            self.mixin.read_attachment(attachment_id=att.id, format="link")
+
+    def test_truncated_text_omits_link_when_download_links_disabled(self):
+        """Truncated inline text does not mint a link when links are disabled."""
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_str("mcp_server.allow_attachment_download_links", "False")
+        utils.clear_mcp_caches()
+        big_text = b"a" * (mcp_mixin.MAX_INLINE_TEXT_CHARS + 50)
+        att = self._attachment("long.txt", big_text, "text/plain")
+        result = self.mixin.read_attachment(attachment_id=att.id)
+        structured = result["structuredContent"]
+        self.assertTrue(structured["truncated"])
+        self.assertNotIn("download_path", structured)
+        self.assertNotIn("download_url", structured)
+        self.assertIn("disabled", result["content"][0]["text"].lower())
+
 
 class TestReadAttachmentBlob(TestAttachmentToolsBase):
     """``read_attachment`` with ``format='blob'``."""

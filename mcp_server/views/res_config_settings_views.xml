@@ -38,8 +38,8 @@
                         </setting>
                         <setting
                             id="mcp_enable_oauth_setting"
-                            title="Lets browser MCP clients, such as Claude.ai and Gemini, connect after the user logs in to Odoo. API keys work in both cases. When this is off, the /mcp/oauth/* routes and OAuth discovery answer HTTP 404. On by default."
-                            help="Let browser clients sign in with Odoo via OAuth 2.1 (on by default)"
+                            title="Lets browser MCP clients, such as Claude.ai and Gemini, connect after the user logs in to Odoo. API keys work in both cases. When this is off, the /mcp/oauth/* routes and OAuth discovery answer HTTP 404. When enabling OAuth, also set Allowed Browser Origins. Off by default."
+                            help="Let browser clients sign in with Odoo via OAuth 2.1 (off by default)"
                             invisible="not mcp_enabled"
                         >
                             <field name="mcp_enable_oauth" />
@@ -64,6 +64,14 @@
                                 </div>
                             </div>
                         </setting>
+                        <setting
+                            id="mcp_allow_oauth_dcr_setting"
+                            title="Lets MCP clients register themselves automatically at /mcp/oauth/register (RFC 7591). Turn this off when using only pre-registered OAuth clients; /mcp/oauth/register then answers HTTP 404 and is omitted from discovery metadata. On by default when OAuth is enabled."
+                            help="Allow clients to self-register at /mcp/oauth/register (disable for pre-registered clients only)"
+                            invisible="not mcp_enabled or not mcp_enable_oauth"
+                        >
+                            <field name="mcp_allow_oauth_dcr" />
+                        </setting>
                     </block>
 
                     <block
@@ -84,8 +92,8 @@
                         </setting>
                         <setting
                             id="mcp_enable_rate_limiting_setting"
-                            title="Limits the requests per minute of each user on /mcp, the REST routes and the XML-RPC proxy. Each Odoo worker counts on its own, so with several workers a user can make up to (workers x limit) requests. For a strict limit, use a reverse proxy. Off by default."
-                            help="Enforce request limits to prevent API abuse"
+                            title="Limits the requests per minute of each user on /mcp, the REST routes and the XML-RPC proxy. Each Odoo worker counts on its own, so with several workers a user can make up to (workers x limit) requests. For a strict limit, use a reverse proxy. On by default."
+                            help="Enforce request limits to prevent API abuse (on by default)"
                         >
                             <field name="mcp_enable_rate_limiting" />
                             <div
@@ -125,9 +133,24 @@
                             </div>
                         </setting>
                         <setting
+                            id="mcp_allow_external_chatter_messages_setting"
+                            title="Lets post_message send public chatter comments (subtype='comment') and notify explicit partner_ids, which can email external followers or customers. When this is off, post_message only allows internal notes (subtype='note') without partner_ids notifications. Off by default."
+                            help="Allow post_message to send public comments and notify partners (off = internal notes only)"
+                        >
+                            <field name="mcp_allow_external_chatter_messages" />
+                        </setting>
+                        <setting
+                            id="mcp_allow_attachment_download_links_setting"
+                            title="Lets read_attachment generate time-limited signed /web/content download links that work without an Odoo login. Turn this off to allow only inline text, image, and blob attachment reads. On by default."
+                            help="Allow read_attachment to mint unauthenticated signed download links"
+                        >
+                            <field name="mcp_allow_attachment_download_links" />
+                        </setting>
+                        <setting
                             id="mcp_link_ttl_hours_setting"
                             title="Hours that a read_attachment download link stays valid. Anyone with the link can download the file without an Odoo login, and a single link cannot be revoked. Keep it short. The AI client asks for a new link when one expires. Maximum: 1008 hours (42 days). Set 0 to use the default. Default: 1."
                             help="Validity of read_attachment download links (no login needed)"
+                            invisible="not mcp_allow_attachment_download_links"
                         >
                             <field
                                 name="mcp_link_ttl_hours"

@@ -105,7 +105,10 @@ class TestMCPCommonController(HttpCase):
         self.assertEqual(result[0][0], {"server_version": "16.0"})
         mock_dispatch.assert_called_once_with("version", ())
 
-    @mute_logger("odoo.addons.mcp_server.controllers.api")
+    @mute_logger(
+        "odoo.addons.mcp_server.controllers.api",
+        "odoo.addons.mcp_server.controllers.error_sanitizer",
+    )
     @patch("odoo.service.common.dispatch")
     def test_common_controller_exception(self, mock_dispatch):
         """Test exception handling in common controller."""
@@ -173,7 +176,10 @@ class TestMCPDatabaseController(HttpCase):
         self.assertEqual(result[0][0], ["test_db1", "test_db2"])
         mock_dispatch.assert_called_once_with("list", ())
 
-    @mute_logger("odoo.addons.mcp_server.controllers.api")
+    @mute_logger(
+        "odoo.addons.mcp_server.controllers.api",
+        "odoo.addons.mcp_server.controllers.error_sanitizer",
+    )
     @patch("odoo.addons.mcp_server.controllers.api._dispatch_db_service")
     def test_db_controller_exception(self, mock_dispatch):
         """Test exception handling in database controller."""

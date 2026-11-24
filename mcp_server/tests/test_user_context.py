@@ -22,6 +22,7 @@ from datetime import datetime, timedelta
 from unittest.mock import patch
 
 from odoo.tests import common, tagged
+from odoo.tools import mute_logger
 
 from ..controllers import rate_limiting, utils
 from .test_helpers import create_test_user, grant_mcp_access
@@ -181,7 +182,9 @@ class TestUserContext(common.HttpCase):
     def test_initialize_omits_instructions_when_context_build_fails(self):
         """initialize stays a valid result (no instructions key) if build raises."""
         # Patch the symbol _initialize actually calls (utils.build_user_context).
-        with patch.object(utils, "build_user_context", side_effect=Exception("boom")):
+        with mute_logger("odoo.addons.mcp_server.controllers.mcp"), patch.object(
+            utils, "build_user_context", side_effect=Exception("boom")
+        ):
             result = self._rpc_result(
                 "initialize", {"protocolVersion": PREFERRED_PROTOCOL_VERSION}
             )

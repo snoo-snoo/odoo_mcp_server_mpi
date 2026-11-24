@@ -20,6 +20,7 @@ from urllib.parse import parse_qsl, urlsplit
 
 from odoo import fields
 from odoo.tests import common, tagged
+from odoo.tools import mute_logger
 
 from ..controllers import auth, oauth_server, rate_limiting, utils
 from ..models import ir_http
@@ -403,6 +404,7 @@ class TestMcpAccessGroupGate(common.HttpCase):
         self.assertEqual(fault.faultCode, 403)
         self.assertIn("MCP User group", fault.faultString)
 
+    @mute_logger("odoo.addons.mcp_server.controllers.error_sanitizer")
     def test_xmlrpc_password_member_is_not_gated(self):
         """A member's VALID uid/password gets past the gate (positive control).
 

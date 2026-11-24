@@ -139,11 +139,44 @@ class McpEnabledModel(models.Model):
     @api.model
     @api.ormcache()
     def _get_oauth_enabled(self):
-        """OAuth front-door switch (``mcp_server.enable_oauth``, default on)."""
+        """OAuth front-door switch (``mcp_server.enable_oauth``, default off)."""
         return (
             self.env["ir.config_parameter"]
             .sudo()  # sudo: admin-managed OAuth enable switch, not user data
-            .get_str("mcp_server.enable_oauth", "True")
+            .get_str("mcp_server.enable_oauth", "False")
+            == "True"
+        )
+
+    @api.model
+    @api.ormcache()
+    def _get_oauth_dcr_enabled(self):
+        """OAuth dynamic client registration switch (``mcp_server.allow_oauth_dcr``)."""
+        return (
+            self.env["ir.config_parameter"]
+            .sudo()  # sudo: admin-managed OAuth DCR switch, not user data
+            .get_str("mcp_server.allow_oauth_dcr", "True")
+            == "True"
+        )
+
+    @api.model
+    @api.ormcache()
+    def _get_allow_external_chatter_messages(self):
+        """Whether ``post_message`` may send external comments / notify partner_ids."""
+        return (
+            self.env["ir.config_parameter"]
+            .sudo()  # sudo: admin-managed security switch, not user data
+            .get_str("mcp_server.allow_external_chatter_messages", "False")
+            == "True"
+        )
+
+    @api.model
+    @api.ormcache()
+    def _get_allow_attachment_download_links(self):
+        """Whether ``read_attachment`` may mint unauthenticated download links."""
+        return (
+            self.env["ir.config_parameter"]
+            .sudo()  # sudo: admin-managed security switch, not user data
+            .get_str("mcp_server.allow_attachment_download_links", "True")
             == "True"
         )
 
