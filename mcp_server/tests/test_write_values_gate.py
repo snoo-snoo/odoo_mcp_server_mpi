@@ -17,6 +17,7 @@ from unittest.mock import patch
 
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import common, tagged
+from odoo.tools import mute_logger
 
 from ..controllers import api, utils
 from ..models import mcp_mixin
@@ -986,9 +987,9 @@ class TestLegacyWriteValuesGate(common.HttpCase):
         )
         # An empty array of keyword arguments is no keyword argument, as in core.
         for kwargs in ({}, []):
-            with self.subTest(kwargs=kwargs), self.assertRaises(
-                xmlrpclib.Fault
-            ) as caught:
+            with self.subTest(kwargs=kwargs), mute_logger(
+                "odoo.addons.mcp_server.controllers.error_sanitizer"
+            ), self.assertRaises(xmlrpclib.Fault) as caught:
                 self._execute("create", [{"name": "Plain"}], kwargs)
             # The call passed the gate: the fault comes from core's dispatch.
             self.assertNotIn(caught.exception.faultCode, (400, 403))

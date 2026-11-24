@@ -14,12 +14,22 @@ class ResConfigSettings(models.TransientModel):
     )
     mcp_enable_oauth = fields.Boolean(
         config_parameter="mcp_server.enable_oauth",
-        default=True,
+        default=False,
         string="Enable OAuth 2.1 Access",
         help="Lets browser MCP clients, such as Claude.ai and Gemini, connect after "
         "the user logs in to Odoo. API keys work in both cases. When this is "
-        "off, the /mcp/oauth/* routes and OAuth discovery answer HTTP 404. On "
-        "by default.",
+        "off, the /mcp/oauth/* routes and OAuth discovery answer HTTP 404. "
+        "When enabling OAuth, also set Allowed Browser Origins. Off by default.",
+    )
+    mcp_allow_oauth_dcr = fields.Boolean(
+        config_parameter="mcp_server.allow_oauth_dcr",
+        default=True,
+        string="Allow Dynamic Client Registration",
+        help="Lets MCP clients register themselves automatically at "
+        "/mcp/oauth/register (RFC 7591). Turn this off when using only "
+        "pre-registered OAuth clients; /mcp/oauth/register then answers "
+        "HTTP 404 and is omitted from discovery metadata. On by default when "
+        "OAuth is enabled.",
     )
     mcp_request_limit = fields.Integer(
         string="Request Limit per Minute",
@@ -43,8 +53,17 @@ class ResConfigSettings(models.TransientModel):
         help="Limits the requests per minute of each user on /mcp, the REST routes "
         "and the XML-RPC proxy. Each Odoo worker counts on its own, so with "
         "several workers a user can make up to (workers x limit) requests. For "
-        "a strict limit, use a reverse proxy. Off by default.",
+        "a strict limit, use a reverse proxy. On by default.",
         config_parameter="mcp_server.enable_rate_limiting",
+        default=True,
+    )
+    mcp_allow_external_chatter_messages = fields.Boolean(
+        string="Allow External Chatter Comments",
+        help="Lets post_message send public chatter comments (subtype='comment') "
+        "and notify explicit partner_ids, which can email external followers or "
+        "customers. When this is off, post_message only allows internal notes "
+        "(subtype='note') without partner_ids notifications. Off by default.",
+        config_parameter="mcp_server.allow_external_chatter_messages",
         default=False,
     )
     mcp_log_retention_days = fields.Integer(
@@ -104,6 +123,14 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="mcp_server.max_field_length",
         default=2000,
     )
+    mcp_allow_attachment_download_links = fields.Boolean(
+        string="Allow Unauthenticated Download Links",
+        help="Lets read_attachment generate time-limited signed /web/content "
+        "download links that work without an Odoo login. Turn this off to allow "
+        "only inline text, image, and blob attachment reads. On by default.",
+        config_parameter="mcp_server.allow_attachment_download_links",
+        default=True,
+    )
     mcp_link_ttl_hours = fields.Integer(
         string="Download Link Validity (hours)",
         help="Hours that a read_attachment download link stays valid. Anyone with "
@@ -147,10 +174,19 @@ class ResConfigSettings(models.TransientModel):
         # the readers back to their defaults -- so write every value explicitly.
         params.set_param("mcp_server.enabled", str(self.mcp_enabled))
         params.set_param("mcp_server.enable_oauth", str(self.mcp_enable_oauth))
+        params.set_param("mcp_server.allow_oauth_dcr", str(self.mcp_allow_oauth_dcr))
         params.set_param("mcp_server.request_limit", str(self.mcp_request_limit))
         params.set_param("mcp_server.enable_logging", str(self.mcp_enable_logging))
         params.set_param(
             "mcp_server.enable_rate_limiting", str(self.mcp_enable_rate_limiting)
+        )
+        params.set_param(
+            "mcp_server.allow_external_chatter_messages",
+            str(self.mcp_allow_external_chatter_messages),
+        )
+        params.set_param(
+            "mcp_server.allow_attachment_download_links",
+            str(self.mcp_allow_attachment_download_links),
         )
         params.set_param(
             "mcp_server.log_retention_days", str(self.mcp_log_retention_days)
