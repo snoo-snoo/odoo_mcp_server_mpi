@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <!-- Core draws this help link only for a documentation URL. An MCP setting shows its help text on it. -->
+    <t t-inherit="web.SearchableSetting" t-inherit-mode="extension">
+        <xpath expr="//FormLabel" position="after"><a
+                t-if="this.props.title and this.props.fieldName and this.props.fieldName.startsWith('mcp_')"
+                class="o_doc_link"
+                t-att-title="this.props.title"
+            ><i class="oi pe-1" data-icon="help" /></a></xpath><xpath
+            expr="//div[hasclass('o_setting_left_pane')]"
+            position="attributes"
+        ><attribute
+                name="t-att-data-tooltip"
+            >this.props.fieldName and this.props.fieldName.startsWith('mcp_') ? false : this.props.title</attribute></xpath><xpath
+            expr="//div[hasclass('o_setting_right_pane')]"
+            position="attributes"
+        ><attribute
+                name="t-att-data-tooltip"
+            >this.props.fieldName and this.props.fieldName.startsWith('mcp_') ? false : this.props.title</attribute></xpath>
+    </t>
+</templates>
