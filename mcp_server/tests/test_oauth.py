@@ -1774,17 +1774,17 @@ class TestOAuthDisabled(UrlOpenCompatMixin, common.HttpCase):
         headers = {"Authorization": f"Bearer {token}"}
         return self.url_open("/mcp", json=body, headers=headers)
 
-    def test_oauth_available_by_default_when_param_unset(self):
-        """OAuth is on by default: an unset enable_oauth parameter counts as on."""
+    def test_oauth_disabled_by_default_when_param_unset(self):
+        """OAuth is off by default: an unset enable_oauth parameter counts as off."""
         params = self.env["ir.config_parameter"].sudo()
         params.search([("key", "=", "mcp_server.enable_oauth")]).unlink()
         utils.clear_mcp_caches()
-        self.assertTrue(utils.is_oauth_enabled(self.env))
+        self.assertFalse(utils.is_oauth_enabled(self.env))
         resp = self.url_open(
             "/mcp/oauth/register",
             json={"redirect_uris": [self.redirect_uri], "scope": "mcp"},
         )
-        self.assertIn(resp.status_code, (200, 201), resp.text[:300])
+        self.assertEqual(resp.status_code, 404)
 
     def test_all_oauth_endpoints_return_404_when_disabled(self):
         """Discovery docs + authorize/token/register all 404 while OAuth is off."""
@@ -1879,3 +1879,23 @@ class TestOAuthDisabled(UrlOpenCompatMixin, common.HttpCase):
         )
         self.assertIn(response.status_code, (200, 201), response.text[:300])
         self.assertTrue(response.json().get("client_id"))
+
+    def test_oauth_dcr_can_be_disabled_independently(self):
+        """Turning allow_oauth_dcr off hides /mcp/oauth/register while OAuth stays on."""
+        params = self.env["ir.config_parameter"].sudo()
+        params.set_param("mcp_server.enable_oauth", "True")
+        params.set_param("mcp_server.allow_oauth_dcr", "False")
+        utils.clear_mcp_caches()
+
+        meta = self.url_open("/.well-known/oauth-authorization-server")
+        self.assertEqual(meta.status_code, 200)
+        body = meta.json()
+        self.assertIn("authorization_endpoint", body)
+        self.assertIn("token_endpoint", body)
+        self.assertNotIn("registration_endpoint", body)
+
+        register = self.url_open(
+            "/mcp/oauth/register",
+            json={"redirect_uris": [self.redirect_uri], "scope": "mcp"},
+        )
+        self.assertEqual(register.status_code, 404)

@@ -1671,6 +1671,13 @@ class McpToolsRead(models.AbstractModel):
 
     def _attachment_link_result(self, target, notice=None):
         """Download-link result: metadata text + link fields, no bytes."""
+        if not utils.is_attachment_download_links_allowed(self.env):
+            raise UserError(
+                _(
+                    "Unauthenticated attachment download links are disabled in "
+                    "MCP settings."
+                )
+            )
         link = self._attachment_download_link(target)
         lines = []
         if notice:
@@ -1791,15 +1798,22 @@ class McpToolsRead(models.AbstractModel):
         extra = {"truncated": truncated}
         if truncated:
             text = text[:MAX_INLINE_TEXT_CHARS]
-            link = self._attachment_download_link(target)
-            extra.update(link)
-            text += "\n\n" + _(
-                "[Truncated after %(chars)s characters. Full file: %(url)s "
-                "(valid until %(expires)s UTC)]",
-                chars=MAX_INLINE_TEXT_CHARS,
-                url=link["download_url"] or link["download_path"],
-                expires=link["expires_at"],
-            )
+            if utils.is_attachment_download_links_allowed(self.env):
+                link = self._attachment_download_link(target)
+                extra.update(link)
+                text += "\n\n" + _(
+                    "[Truncated after %(chars)s characters. Full file: %(url)s "
+                    "(valid until %(expires)s UTC)]",
+                    chars=MAX_INLINE_TEXT_CHARS,
+                    url=link["download_url"] or link["download_path"],
+                    expires=link["expires_at"],
+                )
+            else:
+                text += "\n\n" + _(
+                    "[Truncated after %(chars)s characters. Download links are "
+                    "disabled in MCP settings.]",
+                    chars=MAX_INLINE_TEXT_CHARS,
+                )
         return _tool_result(
             text, self._attachment_structured(target, format_used, text=text, **extra)
         )
