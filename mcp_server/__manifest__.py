@@ -48,6 +48,11 @@ How It Works
 
 Requirements: Odoo 19.0. The native /mcp endpoint needs no extra software;
 the module's legacy XML-RPC endpoints remain available for programmatic/RPC access.
+
+Origin
+------
+Based on https://apps.odoo.com/apps/modules/20.0/mcp_server, maintained and
+hardened by MPI GmbH, Michael Plöckinger (https://mpi-erp.at).
     """,
     "author": "MPI GmbH, Michael Plöckinger, much. Consulting",
     "website": "https://mpi-erp.at",
@@ -77,7 +82,7 @@ the module's legacy XML-RPC endpoints remain available for programmatic/RPC acce
         ],
     },
     "images": [
-        "static/description/banner.gif",
+        "static/description/mpi_logo.png",
         "static/description/icon.png",
     ],
     "external_dependencies": {

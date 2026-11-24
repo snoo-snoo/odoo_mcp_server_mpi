@@ -1,6 +1,18 @@
 # odoo_mcp_server_mpi
 
-Odoo MCP Server (`mcp_server`) maintained and hardened by **MPI GmbH, Michael Plöckinger** ([https://mpi-erp.at](https://mpi-erp.at)).
+Odoo MCP Server (`mcp_server`) maintained and security-hardened by **MPI GmbH, Michael Plöckinger** ([https://mpi-erp.at](https://mpi-erp.at)).
+
+> **Origin:** Based on the Odoo Apps module [MCP Server (`https://apps.odoo.com/apps/modules/20.0/mcp_server`)](https://apps.odoo.com/apps/modules/20.0/mcp_server).
+
+## Branches by Odoo Version
+
+| Branch | Odoo Version | Module Version |
+| ------ | ------------ | -------------- |
+| `16.0` | Odoo 16.0    | `16.0.2.3.2`   |
+| `17.0` | Odoo 17.0    | `17.0.2.3.2`   |
+| `18.0` | Odoo 18.0    | `18.0.2.3.2`   |
+| `19.0` | Odoo 19.0    | `19.0.2.3.2`   |
+| `20.0` | Odoo 20.0    | `20.0.2.3.2`   |
 
 ## Odoo.sh Deployment
 
