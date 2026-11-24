@@ -41,9 +41,13 @@ class TestConfigSettings(TransactionCase):
         param_obj = self.env["ir.config_parameter"].sudo()
         params = [
             "mcp_server.enabled",
+            "mcp_server.enable_oauth",
+            "mcp_server.allow_oauth_dcr",
             "mcp_server.request_limit",
             "mcp_server.enable_logging",
             "mcp_server.enable_rate_limiting",
+            "mcp_server.allow_external_chatter_messages",
+            "mcp_server.allow_attachment_download_links",
         ]
         for param in params:
             param_obj.set_param(param, "")
@@ -51,11 +55,15 @@ class TestConfigSettings(TransactionCase):
         # Create new settings with defaults
         settings = create_test_config_settings(self.env)
 
-        # Check default values
+        # Check default values (secure-by-default hardening)
         self.assertFalse(settings.mcp_enabled)
+        self.assertFalse(settings.mcp_enable_oauth)
+        self.assertTrue(settings.mcp_allow_oauth_dcr)
         self.assertEqual(settings.mcp_request_limit, 300)
         self.assertTrue(settings.mcp_enable_logging)
-        self.assertFalse(settings.mcp_enable_rate_limiting)
+        self.assertTrue(settings.mcp_enable_rate_limiting)
+        self.assertFalse(settings.mcp_allow_external_chatter_messages)
+        self.assertTrue(settings.mcp_allow_attachment_download_links)
 
     def test_unlimited_rate_limit_setting(self):
         """Test that request limit can be set to 0 for unlimited."""
@@ -170,13 +178,31 @@ class TestConfigSettings(TransactionCase):
             param_obj.set_param("mcp_server.enabled", "False")
             self.assertFalse(utils.is_mcp_enabled())
 
-            # OAuth front-door switch (mcp_server.enable_oauth, default on)
+            # OAuth front-door switch (mcp_server.enable_oauth, default off)
             param_obj.set_param("mcp_server.enable_oauth", "True")
             self.assertTrue(utils.is_oauth_enabled(self.env))  # prime cache = True
             param_obj.set_param("mcp_server.enable_oauth", "False")
             self.assertFalse(utils.is_oauth_enabled(self.env))
             param_obj.set_param("mcp_server.enable_oauth", "True")
             self.assertTrue(utils.is_oauth_enabled(self.env))
+
+            # OAuth DCR switch (mcp_server.allow_oauth_dcr, default on)
+            param_obj.set_param("mcp_server.allow_oauth_dcr", "True")
+            self.assertTrue(utils.is_oauth_dcr_enabled(self.env))
+            param_obj.set_param("mcp_server.allow_oauth_dcr", "False")
+            self.assertFalse(utils.is_oauth_dcr_enabled(self.env))
+
+            # External chatter comments switch (default off)
+            param_obj.set_param("mcp_server.allow_external_chatter_messages", "False")
+            self.assertFalse(utils.is_external_chatter_allowed(self.env))
+            param_obj.set_param("mcp_server.allow_external_chatter_messages", "True")
+            self.assertTrue(utils.is_external_chatter_allowed(self.env))
+
+            # Attachment download links switch (default on)
+            param_obj.set_param("mcp_server.allow_attachment_download_links", "True")
+            self.assertTrue(utils.is_attachment_download_links_allowed(self.env))
+            param_obj.set_param("mcp_server.allow_attachment_download_links", "False")
+            self.assertFalse(utils.is_attachment_download_links_allowed(self.env))
 
             # Origin allowlist (mcp_server.allowed_origins, default empty)
             param_obj.set_param("mcp_server.allowed_origins", "")
