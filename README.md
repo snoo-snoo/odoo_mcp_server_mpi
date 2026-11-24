@@ -1,6 +1,6 @@
 # odoo_mcp_server_mpi
 
-Odoo MCP Server (`mcp_server`) maintained and security-hardened by **MPI GmbH, Michael Plöckinger** ([https://mpi-erp.at](https://mpi-erp.at)).
+Odoo MCP Server (`mpi_mcp_server`) maintained and security-hardened by **MPI GmbH, Michael Plöckinger** ([https://mpi-erp.at](https://mpi-erp.at)).
 
 > **Origin:** Based on the Odoo Apps module [MCP Server (`https://apps.odoo.com/apps/modules/20.0/mcp_server`)](https://apps.odoo.com/apps/modules/20.0/mcp_server).
 
@@ -26,10 +26,10 @@ packaging
 
 ## Security Hardening Defaults
 
-- **Rate limiting** (`mcp_server.enable_rate_limiting`) is **enabled by default** (300 req/min per user per worker).
-- **OAuth 2.1** (`mcp_server.enable_oauth`) is **disabled by default** (API keys only until an administrator enables OAuth; when OAuth is enabled, Dynamic Client Registration `/mcp/oauth/register` can also be toggled via `mcp_server.allow_oauth_dcr` and browser origins should be restricted via `mcp_server.allowed_origins`).
-- **Chatter `post_message`** restricts posts to internal notes (`subtype="note"`, no `partner_ids`) by default (`mcp_server.allow_external_chatter_messages = False`) to prevent accidental customer emails.
-- **Attachment download links** keep a 1-hour default TTL (`mcp_server.link_ttl_hours = 1`) and can be disabled altogether via `mcp_server.allow_attachment_download_links`.
+- **Rate limiting** (`mpi_mcp_server.enable_rate_limiting`) is **enabled by default** (300 req/min per user per worker).
+- **OAuth 2.1** (`mpi_mcp_server.enable_oauth`) is **disabled by default** (API keys only until an administrator enables OAuth; when OAuth is enabled, Dynamic Client Registration `/mcp/oauth/register` can also be toggled via `mpi_mcp_server.allow_oauth_dcr` and browser origins should be restricted via `mpi_mcp_server.allowed_origins`).
+- **Chatter `post_message`** restricts posts to internal notes (`subtype="note"`, no `partner_ids`) by default (`mpi_mcp_server.allow_external_chatter_messages = False`) to prevent accidental customer emails.
+- **Attachment download links** keep a 1-hour default TTL (`mpi_mcp_server.link_ttl_hours = 1`) and can be disabled altogether via `mpi_mcp_server.allow_attachment_download_links`.
 
 ## License
 
