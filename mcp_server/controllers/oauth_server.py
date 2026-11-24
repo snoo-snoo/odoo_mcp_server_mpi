@@ -684,7 +684,7 @@ def oauth_surface_enabled():
     (``ir.http._mcp_unauthorized``), so the challenge never advertises a
     discovery document that answers 404.
     """
-    return utils.is_mcp_enabled() and utils.is_oauth_enabled(request.env)
+    return utils.is_mcp_enabled(request.env) and utils.is_oauth_enabled(request.env)
 
 
 def _require_oauth_enabled(method):

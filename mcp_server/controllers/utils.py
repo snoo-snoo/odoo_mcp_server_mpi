@@ -67,17 +67,20 @@ def _sanitize_or_log(
         return None
 
 
-def is_mcp_enabled() -> bool:
+def is_mcp_enabled(env: Optional[Environment] = None) -> bool:
     """Whether MCP is globally enabled (``mcp_server.enabled``, default off).
 
     Delegates to the @ormcache-d ``mcp.enabled.model._get_mcp_enabled()``, so the
     value is served from the registry cache and invalidated cross-worker on any
     config change (``registry.clear_cache`` + DB signaling) -- the master
-    kill-switch takes effect on every worker's next request, not after a TTL. A
-    read error (e.g. no bound request) degrades to disabled (fail closed).
+    kill-switch takes effect on every worker's next request, not after a TTL.
+    Accepts an explicit ``env`` so non-HTTP callers (tests, server actions,
+    cron jobs) do not fail with an unbound ``request`` proxy; falls back to
+    ``request.env`` when omitted. A read error degrades to disabled (fail closed).
     """
     try:
-        gates = request.env["mcp.enabled.model"].sudo()  # sudo: admin config read
+        target_env = env if env is not None else request.env
+        gates = target_env["mcp.enabled.model"].sudo()  # sudo: admin config read
         return gates._get_mcp_enabled()
     except Exception as e:
         _logger.error(f"Error checking if MCP is enabled: {e}")
@@ -128,7 +131,7 @@ def is_model_mcp_enabled(env: Environment, model_name: str) -> bool:
     `mcp.enabled.model.is_model_enabled()`, which is @ormcache-d (bounded and
     invalidated cross-worker on config change).
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return False
 
     model_name = _sanitize_or_log(model_name)
@@ -153,7 +156,7 @@ def check_model_operation_allowed(
     `mcp.enabled.model.check_model_operation_enabled()`, which is @ormcache-d
     (bounded and invalidated cross-worker on config change).
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return False
 
     model_name = _sanitize_or_log(model_name)
@@ -193,7 +196,7 @@ def check_model_method_allowed(env: Environment, model_name: str) -> bool:
     per-model `allow_method_calls` opt-in flag is set (default off). The gate is
     @ormcache-d via `mcp.enabled.model.is_method_call_enabled()`.
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return False
 
     model_name = _sanitize_or_log(model_name)
@@ -221,7 +224,7 @@ def get_enabled_models(env: Environment) -> List[Dict]:
     (technical name), "name" (display name) and "operations" (a dict of allowed
     read/create/write/unlink flags built from the loaded record).
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return []
 
     try:
@@ -267,7 +270,7 @@ def get_model_allowed_operations(env: Environment, model_name: str) -> Dict[str,
     operation name with boolean values. Returns an empty dict if the model is
     not found or not MCP-enabled.
     """
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         return {}
 
     model_name = _sanitize_or_log(model_name)
@@ -354,7 +357,7 @@ def check_mcp_access(env: Environment, model_name: str, method_name: str) -> boo
 
     method_name = str(method_name).strip()
 
-    if not is_mcp_enabled():
+    if not is_mcp_enabled(env):
         _logger.info("MCP: Access denied because MCP is globally disabled.")
         return False
 
@@ -913,7 +916,7 @@ def get_system_info(env: Environment) -> Dict[str, Union[str, int]]:
         lang = env["ir.config_parameter"].sudo().get_param("base.language", "en_US")
 
     enabled_mcp_models_count = 0
-    if is_mcp_enabled():
+    if is_mcp_enabled(env):
         enabled_mcp_models_count = (
             env["mcp.enabled.model"].sudo().search_count([("active", "=", True)])
         )
