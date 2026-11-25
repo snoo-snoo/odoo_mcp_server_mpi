@@ -4,337 +4,366 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCP Server for Odoo 19.0 — MPI GmbH</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; line-height: 1.6; color: #383C44; background-color: #ffffff; margin: 0; padding: 0;">
-    <div style="max-width: 920px; margin: 0 auto; padding: 0 20px;">
+<body style="margin: 0; padding: 0; background-color: #ffffff; color: #2D3748; font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.65;">
+    <section class="oe_container" style="background-color: #ffffff; color: #2D3748; font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.65; padding: 24px 0;">
+        <div class="container" style="max-width: 960px; margin: 0 auto; padding: 0 16px;">
 
-        <!-- MPI Branded Hero Header -->
-        <div style="background: linear-gradient(135deg, #383C44 0%, #1F2A30 60%, #0C645C 100%); border-radius: 20px; padding: 48px 36px 40px; margin: 32px 0 36px; text-align: center; color: #ffffff; box-shadow: 0 12px 32px rgba(12, 100, 92, 0.18);">
-            <div style="margin-bottom: 20px;">
-                <img src="mpi_logo.png" alt="MPI GmbH Logo" style="height: 110px; width: auto; display: inline-block; background-color: #ffffff; padding: 14px 22px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);">
-            </div>
-            <div style="display: inline-block; background-color: rgba(76, 204, 160, 0.18); border: 1px solid #4CCCA0; color: #4CCCA0; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 16px;">
-                Odoo 19.0 &bull; Model Context Protocol &bull; Hardened Edition
-            </div>
-            <h1 style="font-size: 32px; font-weight: 700; color: #ffffff; margin: 0 0 12px; line-height: 1.25;">
-                MCP Server for Odoo
-            </h1>
-            <p style="font-size: 17px; color: #D9F5EC; font-weight: 500; max-width: 680px; margin: 0 auto 14px; line-height: 1.6;">
-                Connect AI assistants securely to your Odoo 19.0 instance via the open Model Context Protocol &mdash; with hardened security defaults and Odoo.sh support by MPI GmbH.
-            </p>
-            <p style="font-size: 13px; color: #C5D1D8; margin: 0;">
-                Maintained by <a href="https://mpi-erp.at" target="_blank" rel="noopener noreferrer" style="color: #4CCCA0; font-weight: 600; text-decoration: none;">MPI GmbH &mdash; Michael Pl&ouml;ckinger (mpi-erp.at)</a>
-            </p>
-        </div>
-
-        <!-- Upstream Origin Note -->
-        <div style="background-color: #EEF9F5; border-left: 4px solid #0C645C; border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 0 0 36px; font-size: 14px; color: #383C44;">
-            <strong style="color: #0C645C;">Origin &amp; Attribution:</strong>
-            This module is based on the Odoo Apps module
-            <a href="https://apps.odoo.com/apps/modules/20.0/mcp_server" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 600;">MCP Server (apps.odoo.com/apps/modules/20.0/mcp_server)</a>
-            and is developed, maintained, and security-hardened by
-            <a href="https://mpi-erp.at" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 600;">MPI GmbH</a>
-            under the OPL-1 license.
-        </div>
-
-        <!-- Overview & Demo -->
-        <div style="margin: 0 0 48px;">
-            <p style="font-size: 16px; color: #383C44; line-height: 1.75; margin: 0 0 28px;">
-                MCP Server exposes a native <strong>Streamable HTTP JSON-RPC 2.0</strong> endpoint directly inside Odoo at <code>/mcp</code> &mdash; no external middleware or bridge process required. AI assistants such as <strong>LibreChat, Claude, ChatGPT, Microsoft Copilot, Cursor, and VS Code</strong> connect directly to your Odoo URL and execute every query and write under the authenticated Odoo user's real ACLs and record rules, with complete audit logging.
-            </p>
-            <div style="background-color: #F4F6F8; border: 1px solid #D8E6E2; border-radius: 16px; padding: 24px; text-align: center;">
-                <img src="mcp_demo.gif" alt="MCP Server AI Query Demo" style="width: 100%; height: auto; display: block; object-fit: contain; box-shadow: 0 10px 28px rgba(56, 60, 68, 0.14); border-radius: 12px;">
-            </div>
-        </div>
-
-        <!-- What is MCP + 3 Core Pillars -->
-        <h2 style="font-size: 28px; font-weight: 700; color: #383C44; margin: 48px 0 18px; border-bottom: 3px solid #4CCCA0; display: inline-block; padding-bottom: 6px;">
-            What is Model Context Protocol (MCP)?
-        </h2>
-        <p style="font-size: 15px; color: #383C44; line-height: 1.75; margin: 0 0 32px;">
-            <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 600;">Model Context Protocol (MCP)</a>
-            is an open standard that gives AI assistants a uniform, secure way to discover schemas, query records, and run business workflows across enterprise systems. One Odoo integration serves every MCP-compatible AI client with zero vendor lock-in.
-        </p>
-
-        <div style="display: flex; flex-wrap: wrap; margin: 0 -10px 40px;">
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #EEF9F5; border: 1px solid #CBEBE0; border-radius: 16px; padding: 26px; height: 100%; box-sizing: border-box;">
-                    <div style="display: inline-block; background-color: #0C645C; color: #ffffff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 6px; margin-bottom: 14px;">Open Standard</div>
-                    <h4 style="font-size: 17px; font-weight: 700; color: #383C44; margin: 0 0 10px;">Universal Compatibility</h4>
-                    <p style="font-size: 14px; color: #4A5568; line-height: 1.6; margin: 0;">
-                        One native <code>/mcp</code> endpoint works with LibreChat, Claude, ChatGPT, Copilot, Cursor, VS Code, and any future MCP client.
-                    </p>
+            <!-- MPI GmbH Hero Header (Light-Mode-Safe Solid Hex Colors) -->
+            <div style="background-color: #F2FAF7; border: 2px solid #0C645C; border-top: 8px solid #0C645C; border-radius: 18px; padding: 44px 32px 38px; margin: 8px 0 32px; text-align: center;">
+                <div style="margin-bottom: 20px;">
+                    <img src="mpi_logo.png" alt="MPI GmbH Logo" style="height: 112px; width: auto; max-width: 100%; display: inline-block;">
                 </div>
-            </div>
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #EEF9F5; border: 1px solid #CBEBE0; border-radius: 16px; padding: 26px; height: 100%; box-sizing: border-box;">
-                    <div style="display: inline-block; background-color: #0C645C; color: #ffffff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 6px; margin-bottom: 14px;">Defense in Depth</div>
-                    <h4 style="font-size: 17px; font-weight: 700; color: #383C44; margin: 0 0 10px;">Secure by Default</h4>
-                    <p style="font-size: 14px; color: #4A5568; line-height: 1.6; margin: 0;">
-                        Per-user opt-in group, per-model/operation allowlists, MCP-only API keys, rate limiting on by default, and full metadata audit logs.
-                    </p>
+                <div style="margin-bottom: 16px;">
+                    <span style="display: inline-block; background-color: #0C645C; color: #ffffff; font-size: 12px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; padding: 6px 16px; border-radius: 999px;">
+                        Odoo 19.0 &bull; Model Context Protocol &bull; Hardened Edition
+                    </span>
                 </div>
-            </div>
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #EEF9F5; border: 1px solid #CBEBE0; border-radius: 16px; padding: 26px; height: 100%; box-sizing: border-box;">
-                    <div style="display: inline-block; background-color: #0C645C; color: #ffffff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 6px; margin-bottom: 14px;">Production Ready</div>
-                    <h4 style="font-size: 17px; font-weight: 700; color: #383C44; margin: 0 0 10px;">Odoo.sh Ready</h4>
-                    <p style="font-size: 14px; color: #4A5568; line-height: 1.6; margin: 0;">
-                        Root <code>requirements.txt</code> for Odoo.sh builds and a clean <code>--test-enable</code> test suite with zero unmuted error noise.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- MPI Security Hardening Highlights -->
-        <div style="background-color: #383C44; color: #ffffff; border-radius: 20px; padding: 36px 32px; margin: 48px 0; border-top: 5px solid #4CCCA0;">
-            <div style="display: flex; align-items: center; margin-bottom: 18px;">
-                <img src="icon.png" alt="MPI Icon" style="height: 44px; width: 44px; margin-right: 14px; background-color: #ffffff; padding: 5px; border-radius: 10px;">
-                <div>
-                    <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin: 0;">MPI GmbH Security Hardening</h2>
-                    <div style="font-size: 13px; color: #4CCCA0; font-weight: 600;">Production-safe defaults built directly into the module</div>
-                </div>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; margin: 16px -10px 0;">
-                <div style="width: 50%; padding: 10px; box-sizing: border-box;">
-                    <div style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(76, 204, 160, 0.3); border-radius: 12px; padding: 20px; height: 100%; box-sizing: border-box;">
-                        <h4 style="font-size: 16px; font-weight: 700; color: #4CCCA0; margin: 0 0 8px;">Chatter Email Guard (Default: Internal Notes Only)</h4>
-                        <p style="font-size: 13px; color: #E2E8F0; margin: 0; line-height: 1.6;">
-                            <code>post_message</code> blocks public comments (<code>subtype="comment"</code>) and explicit <code>partner_ids</code> notifications by default so AI agents cannot accidentally email customers. Admins can opt in via <em>Allow External Chatter Comments</em>.
-                        </p>
-                    </div>
-                </div>
-                <div style="width: 50%; padding: 10px; box-sizing: border-box;">
-                    <div style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(76, 204, 160, 0.3); border-radius: 12px; padding: 20px; height: 100%; box-sizing: border-box;">
-                        <h4 style="font-size: 16px; font-weight: 700; color: #4CCCA0; margin: 0 0 8px;">Rate Limiting Enabled by Default</h4>
-                        <p style="font-size: 13px; color: #E2E8F0; margin: 0; line-height: 1.6;">
-                            Per-user request rate limiting (<code>mpi_mcp_server.enable_rate_limiting</code>) is active out of the box (300 requests/minute per worker) across <code>/mcp</code>, REST, and XML-RPC routes.
-                        </p>
-                    </div>
-                </div>
-                <div style="width: 50%; padding: 10px; box-sizing: border-box;">
-                    <div style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(76, 204, 160, 0.3); border-radius: 12px; padding: 20px; height: 100%; box-sizing: border-box;">
-                        <h4 style="font-size: 16px; font-weight: 700; color: #4CCCA0; margin: 0 0 8px;">OAuth 2.1 Opt-In &amp; DCR Kill-Switch</h4>
-                        <p style="font-size: 13px; color: #E2E8F0; margin: 0; line-height: 1.6;">
-                            OAuth 2.1 is disabled by default so API-key-only deployments expose zero <code>/mcp/oauth/*</code> surface (HTTP 404). When OAuth is enabled, Dynamic Client Registration (<code>/mcp/oauth/register</code>) can still be disabled independently for pre-registered clients.
-                        </p>
-                    </div>
-                </div>
-                <div style="width: 50%; padding: 10px; box-sizing: border-box;">
-                    <div style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(76, 204, 160, 0.3); border-radius: 12px; padding: 20px; height: 100%; box-sizing: border-box;">
-                        <h4 style="font-size: 16px; font-weight: 700; color: #4CCCA0; margin: 0 0 8px;">Attachment Download Link Control</h4>
-                        <p style="font-size: 13px; color: #E2E8F0; margin: 0; line-height: 1.6;">
-                            Keeps the strict 1-hour default link TTL and adds <em>Allow Unauthenticated Download Links</em> so administrators can disable signed <code>/web/content</code> links completely when only inline attachment reads should be allowed.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Key Capabilities -->
-        <h2 style="font-size: 28px; font-weight: 700; color: #383C44; margin: 48px 0 24px; border-bottom: 3px solid #4CCCA0; display: inline-block; padding-bottom: 6px;">
-            Key Features &amp; Capabilities
-        </h2>
-
-        <div style="display: flex; flex-wrap: wrap; margin: 0 -10px 36px;">
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px; height: 100%; box-sizing: border-box;">
-                    <h4 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Native /mcp Endpoint</h4>
-                    <p style="font-size: 14px; color: #4A5568; margin: 0; line-height: 1.6;">
-                        Streamable HTTP JSON-RPC 2.0 right inside Odoo. Supports smart field selection, aggregations, batch creates/updates, and attachment tools.
-                    </p>
-                </div>
-            </div>
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px; height: 100%; box-sizing: border-box;">
-                    <h4 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Custom Tools (Server Actions)</h4>
-                    <p style="font-size: 14px; color: #4A5568; margin: 0; line-height: 1.6;">
-                        Expose curated business verbs (e.g. <code>confirm_sale_order</code> or <code>post_internal_note</code>) backed by Odoo server actions with custom JSON schemas and security groups.
-                    </p>
-                </div>
-            </div>
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px; height: 100%; box-sizing: border-box;">
-                    <h4 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Granular Model Gates</h4>
-                    <p style="font-size: 14px; color: #4A5568; margin: 0; line-height: 1.6;">
-                        Explicit per-model toggles for Read, Create, Update, Delete, and Method Calls, enforced on top of Odoo's native ACLs and record rules.
-                    </p>
-                </div>
-            </div>
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px; height: 100%; box-sizing: border-box;">
-                    <h4 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">OAuth 2.1 &amp; Read-Only Consent</h4>
-                    <p style="font-size: 14px; color: #4A5568; margin: 0; line-height: 1.6;">
-                        Optional PKCE S256 OAuth login lets users authorize AI sessions with their own Odoo account and optionally grant read-only (<code>mcp:read</code>) scope.
-                    </p>
-                </div>
-            </div>
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px; height: 100%; box-sizing: border-box;">
-                    <h4 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">MCP-Only API Keys</h4>
-                    <p style="font-size: 14px; color: #4A5568; margin: 0; line-height: 1.6;">
-                        Mint dedicated API keys scoped strictly to <code>/mcp</code> so leaked credentials have a minimal blast radius and cannot call generic RPC endpoints.
-                    </p>
-                </div>
-            </div>
-            <div style="width: 33.33%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px; height: 100%; box-sizing: border-box;">
-                    <h4 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Audit Trail &amp; User Context</h4>
-                    <p style="font-size: 14px; color: #4A5568; margin: 0; line-height: 1.6;">
-                        Every tool call, denial, rate-limit hit, and login attempt is logged with metadata only. User timezone and allowed companies are passed on handshake.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Full CRUD Section -->
-        <div style="background-color: #EEF9F5; border: 2px solid #0C645C; border-radius: 20px; padding: 36px 28px; margin: 48px 0;">
-            <div style="text-align: center; margin-bottom: 24px;">
-                <span style="display: inline-block; background-color: #0C645C; color: #ffffff; padding: 6px 20px; border-radius: 999px; font-weight: 700; font-size: 14px; letter-spacing: 0.5px;">Full CRUD &amp; Batch Operations</span>
-                <p style="font-size: 15px; color: #383C44; margin: 14px auto 0; max-width: 640px;">
-                    Enable only the exact operations each model needs &mdash; from read-only product search to full task management.
+                <h1 style="font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; font-size: 34px; font-weight: 800; color: #1A202C; margin: 0 0 14px; line-height: 1.2;">
+                    MCP Server for Odoo
+                </h1>
+                <p style="font-size: 17px; color: #2D3748; font-weight: 500; max-width: 700px; margin: 0 auto 18px; line-height: 1.65;">
+                    Connect AI assistants securely to your Odoo 19.0 instance via the open Model Context Protocol &mdash; with hardened production defaults and Odoo.sh support by <strong style="color: #0C645C;">MPI GmbH</strong>.
+                </p>
+                <p style="font-size: 14px; color: #4A5568; margin: 0;">
+                    Maintained by
+                    <a href="https://mpi-erp.at" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 700; text-decoration: underline;">MPI GmbH &mdash; Michael Pl&ouml;ckinger (mpi-erp.at)</a>
                 </p>
             </div>
-            <div style="display: flex; flex-wrap: wrap; margin: 0 -8px;">
-                <div style="width: 25%; padding: 8px; box-sizing: border-box;">
-                    <div style="background-color: #ffffff; border: 1px solid #CBEBE0; border-radius: 14px; padding: 20px; height: 100%; box-sizing: border-box;">
-                        <h4 style="font-size: 15px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Create</h4>
-                        <p style="font-size: 13px; color: #4A5568; margin: 0 0 8px;">"Create a new customer for Acme GmbH"</p>
-                        <p style="font-size: 13px; color: #4A5568; margin: 0;">"Create 5 project tasks for sprint 12"</p>
+
+            <!-- Upstream Origin & Attribution Note -->
+            <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-left: 5px solid #0C645C; border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 0 0 36px; font-size: 14px; color: #2D3748; line-height: 1.65;">
+                <strong style="color: #0C645C;">Origin &amp; Attribution:</strong>
+                This module (<code style="background-color: #E8F5F0; color: #084C46; padding: 2px 6px; border-radius: 5px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">mpi_mcp_server</code>) is based on the Odoo Apps module
+                <a href="https://apps.odoo.com/apps/modules/20.0/mcp_server" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 700; text-decoration: underline;">MCP Server (apps.odoo.com/apps/modules/20.0/mcp_server)</a>
+                and is maintained and security-hardened by
+                <a href="https://mpi-erp.at" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 700; text-decoration: underline;">MPI GmbH</a>
+                under the OPL-1 license.
+            </div>
+
+            <!-- Overview & Live Demo -->
+            <div style="margin: 0 0 48px;">
+                <p style="font-size: 16px; color: #2D3748; line-height: 1.75; margin: 0 0 24px;">
+                    MCP Server exposes a native <strong style="color: #1A202C;">Streamable HTTP JSON-RPC 2.0</strong> endpoint directly inside Odoo at
+                    <code style="background-color: #E8F5F0; color: #084C46; padding: 2px 7px; border-radius: 5px; font-size: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">/mcp</code>
+                    &mdash; with no external middleware or bridge process required. AI assistants such as <strong style="color: #1A202C;">LibreChat, Claude, ChatGPT, Microsoft Copilot, Cursor, and VS Code</strong> connect directly to your Odoo URL and execute every query and write under the authenticated Odoo user's real ACLs and record rules, with complete audit logging.
+                </p>
+                <div style="background-color: #F7F9FB; border: 1px solid #D1E9E0; border-radius: 16px; padding: 20px; text-align: center;">
+                    <img src="mpi_mcp_demo.png" alt="MCP Server AI Query and Security Pipeline" class="img-fluid" style="width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid #CBD5E1;">
+                </div>
+            </div>
+
+            <!-- What is MCP + 3 Core Pillars -->
+            <div style="margin: 0 0 48px;">
+                <h2 style="font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; font-size: 26px; font-weight: 800; color: #1A202C; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 3px solid #4CCCA0; display: inline-block;">
+                    What is Model Context Protocol (MCP)?
+                </h2>
+                <p style="font-size: 15px; color: #2D3748; line-height: 1.75; margin: 0 0 28px;">
+                    <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 700; text-decoration: underline;">Model Context Protocol (MCP)</a>
+                    is an open standard that gives AI assistants a uniform, secure way to discover schemas, query records, and run business workflows across enterprise systems. One Odoo integration serves every MCP-compatible AI client with zero vendor lock-in.
+                </p>
+
+                <div class="row">
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F2FAF7; border: 1px solid #B7E4D5; border-radius: 14px; padding: 24px; height: 100%;">
+                            <div style="margin-bottom: 12px;">
+                                <span style="display: inline-block; background-color: #0C645C; color: #ffffff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 6px;">Open Standard</span>
+                            </div>
+                            <h3 style="font-size: 17px; font-weight: 700; color: #1A202C; margin: 0 0 10px;">Universal Compatibility</h3>
+                            <p style="font-size: 14px; color: #2D3748; line-height: 1.65; margin: 0;">
+                                One native <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">/mcp</code> endpoint works with LibreChat, Claude, ChatGPT, Copilot, Cursor, VS Code, and any future MCP client.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F2FAF7; border: 1px solid #B7E4D5; border-radius: 14px; padding: 24px; height: 100%;">
+                            <div style="margin-bottom: 12px;">
+                                <span style="display: inline-block; background-color: #0C645C; color: #ffffff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 6px;">Defense in Depth</span>
+                            </div>
+                            <h3 style="font-size: 17px; font-weight: 700; color: #1A202C; margin: 0 0 10px;">Secure by Default</h3>
+                            <p style="font-size: 14px; color: #2D3748; line-height: 1.65; margin: 0;">
+                                Per-user opt-in group, per-model and per-operation allowlists, MCP-only API keys, rate limiting on by default, and full metadata audit logs.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F2FAF7; border: 1px solid #B7E4D5; border-radius: 14px; padding: 24px; height: 100%;">
+                            <div style="margin-bottom: 12px;">
+                                <span style="display: inline-block; background-color: #0C645C; color: #ffffff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 6px;">Production Ready</span>
+                            </div>
+                            <h3 style="font-size: 17px; font-weight: 700; color: #1A202C; margin: 0 0 10px;">Odoo.sh Ready</h3>
+                            <p style="font-size: 14px; color: #2D3748; line-height: 1.65; margin: 0;">
+                                Repository root <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">requirements.txt</code> for Odoo.sh builds and a clean <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">--test-enable</code> test suite with zero unmuted error noise.
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <div style="width: 25%; padding: 8px; box-sizing: border-box;">
-                    <div style="background-color: #ffffff; border: 1px solid #CBEBE0; border-radius: 14px; padding: 20px; height: 100%; box-sizing: border-box;">
-                        <h4 style="font-size: 15px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Read &amp; Aggregate</h4>
-                        <p style="font-size: 13px; color: #4A5568; margin: 0 0 8px;">"Find unpaid invoices over EUR 5,000"</p>
-                        <p style="font-size: 13px; color: #4A5568; margin: 0;">"Summarize open orders by salesperson"</p>
+            </div>
+
+            <!-- MPI GmbH Security Hardening Highlights (High-Contrast Light Surface) -->
+            <div style="background-color: #EEF8F5; border: 2px solid #0C645C; border-top: 6px solid #0C645C; border-radius: 18px; padding: 32px 26px 22px; margin: 0 0 48px;">
+                <div class="d-flex align-items-center mb-4" style="display: flex; align-items: center; margin-bottom: 22px;">
+                    <img src="icon.png" alt="MPI GmbH Icon" style="height: 48px; width: 48px; margin-right: 16px; background-color: #ffffff; padding: 5px; border-radius: 12px; border: 1px solid #B7E4D5;">
+                    <div>
+                        <h2 style="font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; font-size: 24px; font-weight: 800; color: #1A202C; margin: 0 0 2px;">
+                            MPI GmbH Security Hardening
+                        </h2>
+                        <div style="font-size: 14px; color: #0C645C; font-weight: 700;">
+                            Production-safe defaults built directly into <code style="background-color: #ffffff; color: #084C46; padding: 1px 6px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">mpi_mcp_server</code>
+                        </div>
                     </div>
                 </div>
-                <div style="width: 25%; padding: 8px; box-sizing: border-box;">
-                    <div style="background-color: #ffffff; border: 1px solid #CBEBE0; border-radius: 14px; padding: 20px; height: 100%; box-sizing: border-box;">
-                        <h4 style="font-size: 15px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Update &amp; Notes</h4>
-                        <p style="font-size: 13px; color: #4A5568; margin: 0 0 8px;">"Update deadline on task #412"</p>
-                        <p style="font-size: 13px; color: #4A5568; margin: 0;">"Log an internal chatter note on SO045"</p>
+
+                <div class="row">
+                    <div class="col-12 col-md-6 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #ffffff; border: 1px solid #B7E4D5; border-left: 4px solid #0C645C; border-radius: 12px; padding: 20px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 8px;">Chatter Email Guard (Default: Internal Notes Only)</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">post_message</code> blocks public comments (<code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">subtype="comment"</code>) and explicit <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">partner_ids</code> notifications by default so AI agents cannot accidentally email customers. Admins can opt in via <strong style="color: #1A202C;">Allow External Chatter Comments</strong>.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #ffffff; border: 1px solid #B7E4D5; border-left: 4px solid #0C645C; border-radius: 12px; padding: 20px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 8px;">Rate Limiting Enabled by Default</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Per-user request rate limiting (<code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">mpi_mcp_server.enable_rate_limiting</code>) is active out of the box (300 requests/minute per worker) across <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">/mcp</code>, REST, and XML-RPC routes.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #ffffff; border: 1px solid #B7E4D5; border-left: 4px solid #0C645C; border-radius: 12px; padding: 20px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 8px;">OAuth 2.1 Opt-In &amp; DCR Kill-Switch</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                OAuth 2.1 is disabled by default so API-key-only deployments expose zero <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">/mcp/oauth/*</code> surface (HTTP 404). When OAuth is enabled, Dynamic Client Registration (<code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">/mcp/oauth/register</code>) can still be disabled independently for pre-registered clients.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #ffffff; border: 1px solid #B7E4D5; border-left: 4px solid #0C645C; border-radius: 12px; padding: 20px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 8px;">Attachment Download Link Control</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Keeps the strict 1-hour default link TTL and adds <strong style="color: #1A202C;">Allow Unauthenticated Download Links</strong> so administrators can disable signed <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">/web/content</code> links completely when only inline attachment reads should be allowed.
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <div style="width: 25%; padding: 8px; box-sizing: border-box;">
-                    <div style="background-color: #ffffff; border: 1px solid #CBEBE0; border-radius: 14px; padding: 20px; height: 100%; box-sizing: border-box;">
-                        <h4 style="font-size: 15px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Delete (Opt-In)</h4>
-                        <p style="font-size: 13px; color: #4A5568; margin: 0 0 8px;">"Remove duplicate draft lead"</p>
-                        <p style="font-size: 13px; color: #4A5568; margin: 0;">Off per model until explicitly enabled</p>
+            </div>
+
+            <!-- Key Capabilities -->
+            <div style="margin: 0 0 48px;">
+                <h2 style="font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; font-size: 26px; font-weight: 800; color: #1A202C; margin: 0 0 24px; padding-bottom: 8px; border-bottom: 3px solid #4CCCA0; display: inline-block;">
+                    Key Features &amp; Capabilities
+                </h2>
+
+                <div class="row">
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Native /mcp Endpoint</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Streamable HTTP JSON-RPC 2.0 right inside Odoo. Supports smart field selection, aggregations, batch creates/updates, and attachment tools.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Custom Tools (Server Actions)</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Expose curated business verbs (e.g. <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">confirm_sale_order</code> or <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">post_internal_note</code>) backed by Odoo server actions with custom JSON schemas and security groups.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Granular Model Gates</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Explicit per-model toggles for Read, Create, Update, Delete, and Method Calls, enforced on top of Odoo's native ACLs and record rules.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">OAuth 2.1 &amp; Read-Only Consent</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Optional PKCE S256 OAuth login lets users authorize AI sessions with their own Odoo account and optionally grant read-only (<code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">mcp:read</code>) scope.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">MCP-Only API Keys</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Mint dedicated API keys scoped strictly to <code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">/mcp</code> so leaked credentials have a minimal blast radius and cannot call generic RPC endpoints.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; height: 100%;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Audit Trail &amp; User Context</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Every tool call, denial, rate-limit hit, and login attempt is logged with metadata only. User timezone and allowed companies are passed on handshake.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Compatible Clients -->
-        <h2 style="font-size: 28px; font-weight: 700; color: #383C44; margin: 48px 0 16px; border-bottom: 3px solid #4CCCA0; display: inline-block; padding-bottom: 6px;">
-            Works With Your AI Clients
-        </h2>
-        <p style="font-size: 15px; color: #4A5568; margin: 0 0 24px;">
-            Connect LibreChat, Claude, ChatGPT, Microsoft Copilot, Cursor, VS Code, or any client listed at
-            <a href="https://modelcontextprotocol.io/clients" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 600;">modelcontextprotocol.io/clients</a>.
-        </p>
-
-        <div style="display: flex; flex-wrap: wrap; margin: 0 -10px 44px; text-align: center;">
-            <div style="width: 25%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px 16px; height: 100%; box-sizing: border-box;">
-                    <img src="claude_logo.png" alt="Claude" style="height: 54px; margin-bottom: 12px; object-fit: contain;">
-                    <div style="font-weight: 700; font-size: 14px; color: #383C44;">Claude</div>
-                </div>
-            </div>
-            <div style="width: 25%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px 16px; height: 100%; box-sizing: border-box;">
-                    <img src="chatgpt_logo.png" alt="ChatGPT" style="height: 54px; margin-bottom: 12px; object-fit: contain;">
-                    <div style="font-weight: 700; font-size: 14px; color: #383C44;">ChatGPT</div>
-                </div>
-            </div>
-            <div style="width: 25%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px 16px; height: 100%; box-sizing: border-box;">
-                    <img src="copilot_logo.png" alt="Microsoft Copilot" style="height: 54px; margin-bottom: 12px; object-fit: contain;">
-                    <div style="font-weight: 700; font-size: 14px; color: #383C44;">Microsoft Copilot</div>
-                </div>
-            </div>
-            <div style="width: 25%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 14px; padding: 24px 16px; height: 100%; box-sizing: border-box;">
-                    <img src="cursor_logo.png" alt="Cursor" style="height: 54px; margin-bottom: 12px; object-fit: contain;">
-                    <div style="font-weight: 700; font-size: 14px; color: #383C44;">Cursor</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Odoo Configuration Screenshots -->
-        <h2 style="font-size: 28px; font-weight: 700; color: #383C44; margin: 48px 0 24px; border-bottom: 3px solid #4CCCA0; display: inline-block; padding-bottom: 6px;">
-            Simple Configuration in Odoo
-        </h2>
-        <div style="background-color: #F4F6F8; border: 1px solid #D8E6E2; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
-            <img src="main_screenshot.png" alt="MCP Enabled Models Configuration" style="width: 100%; height: auto; display: block; border-radius: 10px; box-shadow: 0 8px 24px rgba(56, 60, 68, 0.12); margin-bottom: 20px;">
-            <img src="security_settings.png" alt="MCP Server Security Settings" style="width: 100%; height: auto; display: block; border-radius: 10px; box-shadow: 0 8px 24px rgba(56, 60, 68, 0.12);">
-        </div>
-
-        <!-- Technical Specifications -->
-        <h2 style="font-size: 28px; font-weight: 700; color: #383C44; margin: 48px 0 24px; border-bottom: 3px solid #4CCCA0; display: inline-block; padding-bottom: 6px;">
-            Technical Specifications
-        </h2>
-
-        <div style="display: flex; flex-wrap: wrap; margin: 0 -10px 44px;">
-            <div style="width: 50%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #EEF9F5; border: 1px solid #CBEBE0; border-radius: 16px; padding: 26px; height: 100%; box-sizing: border-box;">
-                    <h4 style="font-size: 17px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Requirements &amp; Odoo.sh</h4>
-                    <ul style="color: #383C44; line-height: 1.7; margin: 0 0 20px; padding-left: 20px; font-size: 14px;">
-                        <li>Odoo 19.0</li>
-                        <li>Python packages in repository root <code>requirements.txt</code>: <code>authlib&gt;=1.6.12,&lt;1.7.0</code>, <code>defusedxml</code>, <code>packaging</code></li>
-                        <li>Any MCP-compatible AI assistant</li>
-                    </ul>
-                    <h4 style="font-size: 17px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Supported Protocols</h4>
-                    <ul style="color: #383C44; line-height: 1.7; margin: 0; padding-left: 20px; font-size: 14px;">
-                        <li>Native MCP at <code>/mcp</code> (Streamable HTTP, JSON-RPC 2.0)</li>
-                        <li>MCP protocol revisions 2025-11-25 &amp; 2025-06-18</li>
-                        <li>OAuth 2.1 (RFC 9728 / 8414 / 7591, PKCE S256) &mdash; opt-in</li>
-                        <li>REST &amp; XML-RPC proxy routes</li>
-                    </ul>
-                </div>
-            </div>
-            <div style="width: 50%; padding: 10px; box-sizing: border-box;">
-                <div style="background-color: #F4F6F8; border: 1px solid #E2E8F0; border-radius: 16px; padding: 26px; height: 100%; box-sizing: border-box;">
-                    <h4 style="font-size: 17px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Security Controls</h4>
-                    <ul style="color: #383C44; line-height: 1.7; margin: 0 0 20px; padding-left: 20px; font-size: 14px;">
-                        <li>Rate limiting enabled by default (300 req/min/worker)</li>
-                        <li>OAuth 2.1 off by default + independent DCR switch</li>
-                        <li><code>post_message</code> restricted to internal notes by default</li>
-                        <li>Optional kill-switch for unauthenticated attachment links</li>
-                        <li>MCP-only API keys, per-model allowlists &amp; audit logging</li>
-                    </ul>
-                    <h4 style="font-size: 17px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">License</h4>
-                    <p style="font-size: 14px; color: #383C44; margin: 0; line-height: 1.6;">
-                        Odoo Proprietary License v1.0 (<code>OPL-1</code>). Based on
-                        <a href="https://apps.odoo.com/apps/modules/20.0/mcp_server" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 600;">Odoo Apps MCP Server</a>.
+            <!-- Full CRUD Section -->
+            <div style="background-color: #F2FAF7; border: 2px solid #0C645C; border-radius: 18px; padding: 32px 24px 20px; margin: 0 0 48px;">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <span style="display: inline-block; background-color: #0C645C; color: #ffffff; padding: 7px 20px; border-radius: 999px; font-weight: 700; font-size: 14px; letter-spacing: 0.4px;">
+                        Full CRUD &amp; Batch Operations
+                    </span>
+                    <p style="font-size: 15px; color: #2D3748; margin: 14px auto 0; max-width: 640px; line-height: 1.65;">
+                        Enable only the exact operations each model needs &mdash; from read-only product search to full task management.
                     </p>
                 </div>
+
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-3 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #ffffff; border: 1px solid #B7E4D5; border-radius: 12px; padding: 18px; height: 100%;">
+                            <h4 style="font-size: 15px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Create</h4>
+                            <p style="font-size: 13px; color: #2D3748; margin: 0 0 8px; line-height: 1.55;">&ldquo;Create a new customer for Acme GmbH&rdquo;</p>
+                            <p style="font-size: 13px; color: #4A5568; margin: 0; line-height: 1.55;">&ldquo;Create 5 project tasks for sprint 12&rdquo;</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #ffffff; border: 1px solid #B7E4D5; border-radius: 12px; padding: 18px; height: 100%;">
+                            <h4 style="font-size: 15px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Read &amp; Aggregate</h4>
+                            <p style="font-size: 13px; color: #2D3748; margin: 0 0 8px; line-height: 1.55;">&ldquo;Find unpaid invoices over EUR 5,000&rdquo;</p>
+                            <p style="font-size: 13px; color: #4A5568; margin: 0; line-height: 1.55;">&ldquo;Summarize open orders by salesperson&rdquo;</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #ffffff; border: 1px solid #B7E4D5; border-radius: 12px; padding: 18px; height: 100%;">
+                            <h4 style="font-size: 15px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Update &amp; Notes</h4>
+                            <p style="font-size: 13px; color: #2D3748; margin: 0 0 8px; line-height: 1.55;">&ldquo;Update deadline on task #412&rdquo;</p>
+                            <p style="font-size: 13px; color: #4A5568; margin: 0; line-height: 1.55;">&ldquo;Log an internal chatter note on SO045&rdquo;</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #ffffff; border: 1px solid #B7E4D5; border-radius: 12px; padding: 18px; height: 100%;">
+                            <h4 style="font-size: 15px; font-weight: 700; color: #0C645C; margin: 0 0 10px;">Delete (Opt-In)</h4>
+                            <p style="font-size: 13px; color: #2D3748; margin: 0 0 8px; line-height: 1.55;">&ldquo;Remove duplicate draft lead&rdquo;</p>
+                            <p style="font-size: 13px; color: #4A5568; margin: 0; line-height: 1.55;">Off per model until explicitly enabled</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- MPI Branded Footer / CTA -->
-        <div style="background-color: #F4F6F8; border: 2px solid #0C645C; border-radius: 18px; padding: 36px 28px; text-align: center; margin: 48px 0 40px;">
-            <img src="mpi_logo.png" alt="MPI GmbH" style="height: 68px; width: auto; margin-bottom: 14px;">
-            <h3 style="font-size: 22px; font-weight: 700; color: #383C44; margin: 0 0 10px;">
-                MPI GmbH &mdash; Michael Pl&ouml;ckinger
-            </h3>
-            <p style="font-size: 15px; color: #4A5568; max-width: 600px; margin: 0 auto 18px;">
-                Enterprise Odoo engineering, ERP integrations, and AI automation tailored for production environments.
-            </p>
-            <p style="margin: 0 0 16px;">
-                <a href="https://mpi-erp.at" target="_blank" rel="noopener noreferrer" style="display: inline-block; background-color: #0C645C; color: #ffffff; font-weight: 600; font-size: 14px; padding: 10px 24px; border-radius: 999px; text-decoration: none;">
-                    Visit mpi-erp.at
-                </a>
-            </p>
-            <p style="font-size: 12px; color: #718096; margin: 0;">
-                Based on <a href="https://apps.odoo.com/apps/modules/20.0/mcp_server" target="_blank" rel="noopener noreferrer" style="color: #0C645C;">https://apps.odoo.com/apps/modules/20.0/mcp_server</a>
-            </p>
-        </div>
+            <!-- Compatible AI Clients -->
+            <div style="margin: 0 0 48px;">
+                <h2 style="font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; font-size: 26px; font-weight: 800; color: #1A202C; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 3px solid #4CCCA0; display: inline-block;">
+                    Works With Your AI Clients
+                </h2>
+                <p style="font-size: 15px; color: #2D3748; margin: 0 0 24px; line-height: 1.65;">
+                    Connect LibreChat, Claude, ChatGPT, Microsoft Copilot, Cursor, VS Code, or any client listed at
+                    <a href="https://modelcontextprotocol.io/clients" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 700; text-decoration: underline;">modelcontextprotocol.io/clients</a>.
+                </p>
 
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                <div class="row text-center">
+                    <div class="col-6 col-md-3 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px 14px; height: 100%;">
+                            <img src="claude_logo.png" alt="Claude" style="height: 52px; width: auto; margin-bottom: 12px;">
+                            <div style="font-weight: 700; font-size: 14px; color: #1A202C;">Claude</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px 14px; height: 100%;">
+                            <img src="chatgpt_logo.png" alt="ChatGPT" style="height: 52px; width: auto; margin-bottom: 12px;">
+                            <div style="font-weight: 700; font-size: 14px; color: #1A202C;">ChatGPT</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px 14px; height: 100%;">
+                            <img src="copilot_logo.png" alt="Microsoft Copilot" style="height: 52px; width: auto; margin-bottom: 12px;">
+                            <div style="font-weight: 700; font-size: 14px; color: #1A202C;">Microsoft Copilot</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px 14px; height: 100%;">
+                            <img src="cursor_logo.png" alt="Cursor" style="height: 52px; width: auto; margin-bottom: 12px;">
+                            <div style="font-weight: 700; font-size: 14px; color: #1A202C;">Cursor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Odoo Configuration Screenshots -->
+            <div style="margin: 0 0 48px;">
+                <h2 style="font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; font-size: 26px; font-weight: 800; color: #1A202C; margin: 0 0 22px; padding-bottom: 8px; border-bottom: 3px solid #4CCCA0; display: inline-block;">
+                    Simple Configuration in Odoo
+                </h2>
+                <div style="background-color: #F7F9FB; border: 1px solid #D1E9E0; border-radius: 16px; padding: 22px;">
+                    <img src="main_screenshot.png" alt="MCP Enabled Models Configuration" class="img-fluid" style="width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid #CBD5E1; margin-bottom: 20px;">
+                    <img src="security_settings.png" alt="MCP Server Security Settings" class="img-fluid" style="width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid #CBD5E1;">
+                </div>
+            </div>
+
+            <!-- Technical Specifications -->
+            <div style="margin: 0 0 48px;">
+                <h2 style="font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; font-size: 26px; font-weight: 800; color: #1A202C; margin: 0 0 22px; padding-bottom: 8px; border-bottom: 3px solid #4CCCA0; display: inline-block;">
+                    Technical Specifications
+                </h2>
+
+                <div class="row">
+                    <div class="col-12 col-md-6 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F2FAF7; border: 1px solid #B7E4D5; border-radius: 14px; padding: 24px; height: 100%;">
+                            <h3 style="font-size: 17px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Requirements &amp; Odoo.sh</h3>
+                            <ul style="color: #2D3748; line-height: 1.75; margin: 0 0 20px; padding-left: 20px; font-size: 14px;">
+                                <li><strong style="color: #1A202C;">Odoo 19.0</strong> (technical module: <code style="background-color: #ffffff; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">mpi_mcp_server</code>)</li>
+                                <li>Python packages in repository root <code style="background-color: #ffffff; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">requirements.txt</code>: <code style="background-color: #ffffff; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">authlib&gt;=1.6.12,&lt;1.7.0</code>, <code style="background-color: #ffffff; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">defusedxml</code>, <code style="background-color: #ffffff; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">packaging</code></li>
+                                <li>Any MCP-compatible AI assistant</li>
+                            </ul>
+                            <h3 style="font-size: 17px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Supported Protocols</h3>
+                            <ul style="color: #2D3748; line-height: 1.75; margin: 0; padding-left: 20px; font-size: 14px;">
+                                <li>Native MCP at <code style="background-color: #ffffff; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">/mcp</code> (Streamable HTTP, JSON-RPC 2.0)</li>
+                                <li>MCP protocol revisions 2025-11-25 &amp; 2025-06-18</li>
+                                <li>OAuth 2.1 (RFC 9728 / 8414 / 7591, PKCE S256) &mdash; opt-in</li>
+                                <li>REST &amp; XML-RPC proxy routes</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-3" style="margin-bottom: 16px;">
+                        <div style="background-color: #F7F9FB; border: 1px solid #CBD5E1; border-radius: 14px; padding: 24px; height: 100%;">
+                            <h3 style="font-size: 17px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">Security Controls</h3>
+                            <ul style="color: #2D3748; line-height: 1.75; margin: 0 0 20px; padding-left: 20px; font-size: 14px;">
+                                <li>Rate limiting enabled by default (300 req/min/worker)</li>
+                                <li>OAuth 2.1 off by default + independent DCR switch</li>
+                                <li><code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">post_message</code> restricted to internal notes by default</li>
+                                <li>Optional kill-switch for unauthenticated attachment links</li>
+                                <li>MCP-only API keys, per-model allowlists &amp; audit logging</li>
+                            </ul>
+                            <h3 style="font-size: 17px; font-weight: 700; color: #0C645C; margin: 0 0 12px;">License</h3>
+                            <p style="font-size: 14px; color: #2D3748; margin: 0; line-height: 1.65;">
+                                Odoo Proprietary License v1.0 (<code style="background-color: #E8F5F0; color: #084C46; padding: 1px 5px; border-radius: 4px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">OPL-1</code>). Based on
+                                <a href="https://apps.odoo.com/apps/modules/20.0/mcp_server" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 700; text-decoration: underline;">Odoo Apps MCP Server</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MPI GmbH Branded Footer / CTA -->
+            <div style="background-color: #F2FAF7; border: 2px solid #0C645C; border-radius: 18px; padding: 36px 28px; text-align: center; margin: 0 0 24px;">
+                <img src="mpi_logo.png" alt="MPI GmbH" style="height: 76px; width: auto; max-width: 100%; margin-bottom: 14px; display: inline-block;">
+                <h3 style="font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; font-size: 22px; font-weight: 800; color: #1A202C; margin: 0 0 10px;">
+                    MPI GmbH &mdash; Michael Pl&ouml;ckinger
+                </h3>
+                <p style="font-size: 15px; color: #2D3748; max-width: 600px; margin: 0 auto 20px; line-height: 1.65;">
+                    Odoo development, security-hardened modules, and AI automation tailored for production environments.
+                </p>
+                <p style="margin: 0 0 18px;">
+                    <a href="https://mpi-erp.at" target="_blank" rel="noopener noreferrer" style="display: inline-block; background-color: #0C645C; color: #ffffff; font-weight: 700; font-size: 15px; padding: 12px 28px; border-radius: 999px; text-decoration: none;">
+                        Visit mpi-erp.at
+                    </a>
+                </p>
+                <p style="font-size: 13px; color: #4A5568; margin: 0;">
+                    Based on <a href="https://apps.odoo.com/apps/modules/20.0/mcp_server" target="_blank" rel="noopener noreferrer" style="color: #0C645C; font-weight: 600; text-decoration: underline;">https://apps.odoo.com/apps/modules/20.0/mcp_server</a>
+                </p>
+            </div>
+
+        </div>
+    </section>
 </body>
 </html>
